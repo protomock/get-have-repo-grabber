@@ -1,7 +1,7 @@
 var request = require('request');
 
 var options = {
-    url: 'https://api.github.com/repositories?access_token=f97033d092a685922882e146bc37f985ddacbb59',
+    url: 'https://api.github.com/repositories?access_token=' + process.env.ACCESS_TOKEN,
     headers: {
         'User-Agent': 'github-repo-grabber'
     },
