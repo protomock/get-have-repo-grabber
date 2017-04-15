@@ -1,17 +1,17 @@
-var request = require('request');
+var fs = require('fs');
+var githubClient = require('./github-client');
+var wstream = fs.createWriteStream('repo-names.txt');
 
-var options = {
-    url: 'https://api.github.com/repositories?access_token=' + process.env.ACCESS_TOKEN,
-    headers: {
-        'User-Agent': 'github-repo-grabber'
-    },
-    json: true
-};
-request.get(options, function(error, response, body) {
-    if (error) throw error;
-
-    for (var i = 0; i < body.length; i++) {
-        console.log(body[i].name);
-        console.log(body[i].id);
+var processData = function(data) {
+    if (data.length === 0) {
+        wstream.end();
+        return;
     }
-});
+    for (var i = 0; i < data.length; i++) {
+        console.log(data[i].name);
+        wstream.write(data[i].name + '\n');
+    }
+    return githubClient.getAllReposSince(data[data.length - 1].id, processData)
+};
+
+githubClient.getAllReposSince(null, processData);
